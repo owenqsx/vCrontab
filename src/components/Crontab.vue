@@ -135,7 +135,7 @@ export default {
     };
   },
   name: "vcrontab",
-  props: ["expression", "hideComponent"],
+  props: ["expression", "hideComponent", "placeholder"],
   methods: {
     shouldHide(key) {
       if (this.hideComponent && this.hideComponent.includes(key)) return false;
@@ -180,6 +180,7 @@ export default {
         console.log(`来自组件 ${from} 改变了 ${name} ${value}`);
         this.changeRadio(name, value);
       }
+      this.$emit("change", this.contabValueString);
     },
     //赋值到组件
     changeRadio(name, value) {
@@ -309,18 +310,33 @@ export default {
     clearCron() {
       // 还原选择项
       ("准备还原");
-      this.contabValueObj = {
-        second: "*",
-        min: "*",
-        hour: "*",
-        day: "*",
-        mouth: "*",
-        week: "?",
-        year: "",
-      };
+      if (this.placeholder !== null) {
+        this.contabValueObj = this.placeholder
+      } else {
+        this.contabValueObj = {
+          second: "0",
+          min: "0",
+          hour: "*",
+          day: "*",
+          mouth: "*",
+          week: "?",
+          year: "",
+        };
+      }
+
+      // this.contabValueObj = {
+      //   second: "0",
+      //   min: "0",
+      //   hour: "*",
+      //   day: "*",
+      //   mouth: "*",
+      //   week: "?",
+      //   year: "",
+      // };
       for (let j in this.contabValueObj) {
         this.changeRadio(j, this.contabValueObj[j]);
       }
+      this.$emit("clear", contabValueObj);
     },
   },
   computed: {
@@ -354,6 +370,7 @@ export default {
   },
   watch: {
     expression: "resolveExp",
+    placeholder: "clearCron",
     hideComponent(value) {
       // 隐藏部分组件
     },
